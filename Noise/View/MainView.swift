@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct MainView: View {
+    let audioMeter = AudioMeter()
+    
     var body: some View {
         VStack {
-            
+            Text("Тест микрофона")
+        }
+        .task {
+            await audioMeter.requestPermission()
+            audioMeter.configureSession()
         }
     }
 }
