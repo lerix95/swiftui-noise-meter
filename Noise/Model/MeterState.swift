@@ -6,3 +6,45 @@
 //
 
 import Foundation
+
+enum MeterState {
+    case requesting
+    case denied
+    case listening
+    case measuring(decibels: Double)
+    
+    var title: String {
+        switch self {
+        case .requesting:
+            ""
+        case .denied:
+            ""
+        case .listening:
+            "Слушая..."
+        case .measuring(let decibels):
+            "\(Int(decibels)) dB"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .requesting:
+            ""
+        case .denied:
+            "Разрешите доступ к микрофону в Настройках."
+        case .listening:
+            "Первый замер займёт пару секунд, подождите."
+        case .measuring(let decibels):
+            NoiseLevel(decibels: decibels).description
+        }
+    }
+    
+    var showSettingsButton: Bool {
+        switch self {
+        case .denied:
+            true
+        default:
+            false
+        }
+    }
+}
