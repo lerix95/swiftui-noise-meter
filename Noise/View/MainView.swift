@@ -13,6 +13,9 @@ struct MainView: View {
     var body: some View {
         VStack {
             Text("Тест микрофона")
+            Button("Стоп") {
+                audioMeter.stop()
+            }
         }
         .task {
             await audioMeter.requestPermission()

@@ -32,7 +32,8 @@ class AudioMeter {
         let inputNode = audioEngine.inputNode
         let format = inputNode.outputFormat(forBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, time in
-            print("Пачка: \(buffer.frameLength)")
+            let decibels = self.calculateDecibels(from: buffer)
+            print("dB: \(decibels)")
         }
         
         do {
@@ -40,6 +41,36 @@ class AudioMeter {
             print("Движок запущен")
         } catch {
             print("Ошибка движка: \(error)")
+        }
+    }
+    
+    func calculateDecibels(from buffer: AVAudioPCMBuffer) -> Float {
+        guard let samples = buffer.floatChannelData?[0] else {
+            return -160
+        }
+        
+        let numberCount = Int(buffer.frameLength)
+        
+        var sum: Float = 0
+        for i in 0..<numberCount {
+            sum += samples[i] * samples[i]
+        }
+        
+        let rms = sqrt(sum / Float(numberCount))
+        return 20 * log10(rms)
+    }
+    
+    func stop() {
+        audioEngine.inputNode.removeTap(onBus: 0)
+        audioEngine.stop()
+        
+        let session = AVAudioSession.sharedInstance()
+        
+        do {
+            try session.setActive(false)
+            print("Сессия остановлена")
+        } catch {
+            print("Ошибка остановки сессии: \(error)")
         }
     }
 }
