@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct MainView: View {
-    let audioMeter = AudioMeter()
+    @State private var viewModel = NoiseMeterViewModel()
     
     var body: some View {
-        VStack {
-            Text("Тест микрофона")
-            Button("Стоп") {
-                audioMeter.stop()
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            Text(viewModel.state.title)
+                .font(.system(size: 56, weight: .light))
+            
+            Text(viewModel.state.message)
+                .font(.system(size: 26, weight: .light))
         }
+        .padding()
         .task {
-            await audioMeter.requestPermission()
-            audioMeter.configureSession()
-            audioMeter.start()
+            await viewModel.startMeasuring()
         }
     }
 }

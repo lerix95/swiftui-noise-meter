@@ -20,7 +20,7 @@ enum MeterState {
         case .denied:
             ""
         case .listening:
-            "Слушая..."
+            "Слушаю..."
         case .measuring(let decibels):
             "\(Int(decibels)) dB"
         }

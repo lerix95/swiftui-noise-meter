@@ -8,7 +8,8 @@
 import AVFoundation
 
 class AudioMeter {
-    var audioEngine = AVAudioEngine()
+    private let audioEngine = AVAudioEngine()
+    var onDecibels: ((Float) -> Void)?
     
     func requestPermission() async -> Bool {
         let granted = await AVAudioApplication.requestRecordPermission()
@@ -33,7 +34,7 @@ class AudioMeter {
         let format = inputNode.outputFormat(forBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, time in
             let decibels = self.calculateDecibels(from: buffer)
-            print("dB: \(decibels)")
+            self.onDecibels?(decibels)
         }
         
         do {
@@ -57,6 +58,11 @@ class AudioMeter {
         }
         
         let rms = sqrt(sum / Float(numberCount))
+        
+        guard rms > 0 else {
+            return -160
+        }
+        
         return 20 * log10(rms)
     }
     
