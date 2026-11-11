@@ -17,6 +17,7 @@ struct MainView: View {
         .task {
             await audioMeter.requestPermission()
             audioMeter.configureSession()
+            audioMeter.start()
         }
     }
 }
