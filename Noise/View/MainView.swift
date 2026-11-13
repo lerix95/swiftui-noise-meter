@@ -11,14 +11,20 @@ struct MainView: View {
     @State private var viewModel = NoiseMeterViewModel()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(viewModel.state.title)
-                .font(.system(size: 56, weight: .light))
+        VStack(alignment: .leading, spacing: 20) {
+            GridView(cellColors: Array(repeating: .grayDarkBox, count: 96))
             
-            Text(viewModel.state.message)
-                .font(.system(size: 26, weight: .light))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(viewModel.state.title)
+                    .font(.system(size: 56, weight: .light))
+                    .foregroundStyle(.white)
+                    .frame(height: 68)
+                Text(viewModel.state.message)
+                    .font(.system(size: 26, weight: .light))
+                    .lineSpacing(2)
+            }
         }
-        .padding()
+        .frame(width: 327)
         .task {
             await viewModel.startMeasuring()
         }
