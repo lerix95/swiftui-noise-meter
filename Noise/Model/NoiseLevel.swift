@@ -12,9 +12,9 @@ enum NoiseLevel {
     
     init(decibels: Double) {
         switch decibels {
-        case ..<56:
+        case ..<60:
             self = .normal
-        case 56..<80:
+        case 60..<84:
             self = .elevated
         default:
             self = .dangerous
