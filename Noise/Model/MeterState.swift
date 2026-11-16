@@ -47,4 +47,13 @@ enum MeterState {
             false
         }
     }
+    
+    var isMeasuring: Bool {
+        switch self {
+        case .measuring:
+            true
+        default:
+            false
+        }
+    }
 }

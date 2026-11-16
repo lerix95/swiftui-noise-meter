@@ -13,16 +13,23 @@ class NoiseMeterViewModel {
     var state = MeterState.requesting
     private let audioMeter = AudioMeter()
     private var smoothedDecibels: Double?
+    private var isRunning = false
     
     func startMeasuring() async {
-        let granted = await audioMeter.requestPermission()
+        guard !isRunning else { return }
+        isRunning = true
         
+        let granted = await audioMeter.requestPermission()
         guard granted else {
             state = .denied
+            isRunning = false
             return
         }
         
-        state = .listening
+        if !state.isMeasuring {
+            state = .listening
+        }
+        
         await audioMeter.configureSession()
         audioMeter.onDecibels = { [weak self] decibels in
             Task { @MainActor in
@@ -32,8 +39,15 @@ class NoiseMeterViewModel {
         audioMeter.start()
     }
     
+    func stopMeasuring() {
+        guard isRunning else { return }
+        audioMeter.stop()
+        isRunning = false
+        smoothedDecibels = nil
+    }
+    
     func updateLevel(_ decibels: Float) {
-        let calibrated = Double(decibels) + 105
+        let calibrated = max(Double(decibels) + 105, 0)
         
         if let previous = smoothedDecibels {
             smoothedDecibels = previous + (calibrated - previous ) * 0.2

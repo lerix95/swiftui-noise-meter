@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     @State private var viewModel = NoiseMeterViewModel()
     @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     
     private let micGrayCells: Set<Int> = Set(arrayLiteral: 3, 4, 10, 11, 12, 13, 18, 19, 20, 21, 26, 27, 28, 34, 35, 37, 40, 42, 44, 45, 47, 48, 51, 52, 53, 55, 58, 59, 60, 61, 62, 66, 67, 68, 69, 75, 76, 83, 84, 89, 90, 91, 92, 93, 94)
     private let micRedCells: Set<Int> = [15, 22, 29, 36, 43, 50, 57, 64]
@@ -43,6 +44,16 @@ struct MainView: View {
         .padding(.top, 50)
         .task {
             await viewModel.startMeasuring()
+        }
+        .onChange(of: scenePhase) { _, newPhase in             // ← НОВОЕ
+            switch newPhase {
+            case .active:
+                Task { await viewModel.startMeasuring() }     // вернулись — запускаем
+            case .background:
+                viewModel.stopMeasuring()                      // свернули — останавливаем
+            default:
+                break
+            }
         }
     }
     
