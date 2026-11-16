@@ -17,7 +17,7 @@ class AudioMeter {
         return granted
     }
     
-    func configureSession() {
+    @concurrent nonisolated func configureSession() async {
         let session = AVAudioSession.sharedInstance()
         
         do {

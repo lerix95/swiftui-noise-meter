@@ -22,8 +22,8 @@ class NoiseMeterViewModel {
             return
         }
         
-        audioMeter.configureSession()
         state = .listening
+        await audioMeter.configureSession()
         audioMeter.onDecibels = { [weak self] decibels in
             Task { @MainActor in
                 self?.updateLevel(decibels)
@@ -33,7 +33,7 @@ class NoiseMeterViewModel {
     }
     
     func updateLevel(_ decibels: Float) {
-        let calibrated = Double(decibels) + 100
+        let calibrated = Double(decibels) + 105
         
         if let previous = smoothedDecibels {
             smoothedDecibels = previous + (calibrated - previous ) * 0.2

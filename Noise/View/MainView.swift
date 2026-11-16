@@ -12,7 +12,6 @@ struct MainView: View {
     @Environment(\.openURL) private var openURL
     
     private let micGrayCells: Set<Int> = Set(arrayLiteral: 3, 4, 10, 11, 12, 13, 18, 19, 20, 21, 26, 27, 28, 34, 35, 37, 40, 42, 44, 45, 47, 48, 51, 52, 53, 55, 58, 59, 60, 61, 62, 66, 67, 68, 69, 75, 76, 83, 84, 89, 90, 91, 92, 93, 94)
-
     private let micRedCells: Set<Int> = [15, 22, 29, 36, 43, 50, 57, 64]
     
     var body: some View {
@@ -50,6 +49,7 @@ struct MainView: View {
     private func makeCellColors() -> [Color] {
         if case .denied = viewModel.state {
             var colors: [Color] = []
+            
             for index in 0..<96 {
                 if micRedCells.contains(index) {
                     colors.append(.redBox)
@@ -70,7 +70,8 @@ struct MainView: View {
                 let rowFromBottom = 11 - rowFromTop
                 let position = rowFromBottom * 8 + column
                 let cellStart = 30 + Double(position) * 0.75
-                if decibels > cellStart {
+                
+                if decibels > cellStart || position == 0 {
                     colors.append(NoiseLevel(decibels: cellStart).color)
                 } else {
                     colors.append(.grayDarkBox)
