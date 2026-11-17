@@ -8,7 +8,11 @@ A minimalist noise meter for iPhone built with SwiftUI. It listens to the microp
 
 ## Demo
 
-<!-- Video with sound: drag Screenshots/demo.mp4 here when editing README on GitHub -->
+
+
+https://github.com/user-attachments/assets/9e3d96c3-6e54-4af0-b8fe-d25e1839a2bd
+
+
 
 ## Features
 
