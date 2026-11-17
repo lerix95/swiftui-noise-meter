@@ -2,10 +2,6 @@
 
 A minimalist noise meter for iPhone built with SwiftUI. It listens to the microphone in real time, converts the signal to decibels and shows the level on a pixel grid with green, yellow and red zones. Designed in Figma and implemented from scratch as a pet project.
 
-<p align="center">
-  <img src="Screenshots/figma1.png" width="100%" alt="dB Meter design">
-</p>
-
 ## Demo
 
 <!-- Video with sound: drag Screenshots/demo.mp4 here when editing README on GitHub -->
@@ -20,6 +16,12 @@ A minimalist noise meter for iPhone built with SwiftUI. It listens to the microp
 - Stops the microphone when the app goes to background and resumes on return
 - Handles audio interruptions: incoming calls, alarms, timers
 - Dark theme, portrait orientation, also runs on Apple Silicon Macs
+
+## Screens
+
+<p align="center">
+  <img src="Screenshots/figma1.png" width="100%" alt="dB Meter design">
+</p>
 
 <p align="center">
   <img src="Screenshots/figma2.png" width="100%" alt="dB Meter design">
