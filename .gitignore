@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+
+# Build
+build/
+DerivedData/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Raw videos
+Screenshots/*.MOV
+Screenshots/*.mov
