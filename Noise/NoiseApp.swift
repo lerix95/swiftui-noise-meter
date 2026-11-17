@@ -12,6 +12,8 @@ struct NoiseApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.launchBackground)
                 .preferredColorScheme(.dark)
         }
     }
