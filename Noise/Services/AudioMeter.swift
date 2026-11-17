@@ -79,4 +79,10 @@ class AudioMeter {
             print("Ошибка остановки сессии: \(error)")
         }
     }
+        Task {                                                     // отдельная задача: ждёт всё время
+                named: AVAudioSession.interruptionNotification     // ждём только уведомления о прерываниях
+                    continue                                       // битое уведомление — ждём следующее
+                }
+
+                switch type {                                      // системный enum
 }
