@@ -32,13 +32,14 @@ struct MainView: View {
     private let decibelsPerCell = 0.75
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 16) {
             GridView(cellColors: makeCellColors())
             
             VStack(alignment: .leading, spacing: 4) {
                 if !viewModel.state.title.isEmpty {
                     Text(viewModel.state.title)
                         .font(.system(size: 56, weight: .light))
+                        .monospacedDigit()
                         .foregroundStyle(.white)
                         .frame(height: 68)
                 }

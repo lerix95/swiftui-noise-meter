@@ -23,6 +23,8 @@ struct GridView: View {
                 RoundedRectangle(cornerRadius: cellCornerRadius)
                     .fill(cellColors[index])
                     .frame(width: cellSize, height: cellSize)
+                    .animation(.easeOut(duration: 0.075), value:  cellColors[index])
+                
             }
         }
     }
