@@ -12,8 +12,24 @@ struct MainView: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     
-    private let micGrayCells: Set<Int> = Set(arrayLiteral: 3, 4, 10, 11, 12, 13, 18, 19, 20, 21, 26, 27, 28, 34, 35, 37, 40, 42, 44, 45, 47, 48, 51, 52, 53, 55, 58, 59, 60, 61, 62, 66, 67, 68, 69, 75, 76, 83, 84, 89, 90, 91, 92, 93, 94)
+    private let micGrayCells: Set<Int> = [
+        3, 4,
+        10, 11, 12, 13,
+        18, 19, 20, 21,
+        26, 27, 28,
+        34, 35, 37,
+        40, 42, 44, 45, 47,
+        48, 51, 52, 53, 55,
+        58, 59, 60, 61, 62,
+        66, 67, 68, 69,
+        75, 76,
+        83, 84,
+        89, 90, 91, 92, 93, 94
+    ]
     private let micRedCells: Set<Int> = [15, 22, 29, 36, 43, 50, 57, 64]
+    
+    private let scaleMinimum = 30.0
+    private let decibelsPerCell = 0.75
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -32,7 +48,7 @@ struct MainView: View {
             }
             
             if viewModel.state.showSettingsButton {
-                PrimaryButtonView(title: "Открыть настройки") {
+                PrimaryButtonView(title: "Open Settings") {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         openURL(url)
                     }
@@ -45,12 +61,12 @@ struct MainView: View {
         .task {
             await viewModel.startMeasuring()
         }
-        .onChange(of: scenePhase) { _, newPhase in             // ← НОВОЕ
+        .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {
             case .active:
-                Task { await viewModel.startMeasuring() }     // вернулись — запускаем
+                Task { await viewModel.startMeasuring() }
             case .background:
-                viewModel.stopMeasuring()                      // свернули — останавливаем
+                viewModel.stopMeasuring()
             default:
                 break
             }
@@ -80,7 +96,7 @@ struct MainView: View {
                 let column = index % 8
                 let rowFromBottom = 11 - rowFromTop
                 let position = rowFromBottom * 8 + column
-                let cellStart = 30 + Double(position) * 0.75
+                let cellStart = scaleMinimum + Double(position) * decibelsPerCell
                 
                 if decibels > cellStart || position == 0 {
                     colors.append(NoiseLevel(decibels: cellStart).color)
@@ -93,7 +109,6 @@ struct MainView: View {
             return Array(repeating: .grayDarkBox, count: 96)
         }
     }
-    
 }
 
 #Preview {

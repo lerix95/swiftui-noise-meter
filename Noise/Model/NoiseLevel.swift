@@ -35,11 +35,11 @@ enum NoiseLevel {
     var description: String {
         switch self {
         case .normal:
-            "Нормальный уровень шума, можно не переживать."
+            "Normal noise level, nothing to worry about."
         case .elevated:
-            "Повышенный уровень шума, сделайте перерыв."
+            "Elevated noise level, consider taking a break."
         case .dangerous:
-            "Опасный уровень шума, пожалуйста, берегите слух."
+            "Dangerous noise level, please protect your hearing."
         }
     }
 }

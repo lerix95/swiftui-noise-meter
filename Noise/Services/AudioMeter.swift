@@ -10,10 +10,11 @@ import AVFoundation
 class AudioMeter {
     private let audioEngine = AVAudioEngine()
     var onDecibels: ((Float) -> Void)?
+    var onInterruptionBegan: (() -> Void)?
+    var onInterruptionEnded: (() -> Void)?
     
     func requestPermission() async -> Bool {
         let granted = await AVAudioApplication.requestRecordPermission()
-        print("Разрешено: \(granted)")
         return granted
     }
     
@@ -23,29 +24,27 @@ class AudioMeter {
         do {
             try session.setCategory(.record, mode: .measurement)
             try session.setActive(true)
-            print("Сессия готова")
         } catch {
-            print("Ошибка сессии: \(error)")
+            print("Session error: \(error)")
         }
     }
     
     func start() {
         let inputNode = audioEngine.inputNode
         let format = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, time in
+        inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, _ in
             let decibels = self.calculateDecibels(from: buffer)
             self.onDecibels?(decibels)
         }
         
         do {
             try audioEngine.start()
-            print("Движок запущен")
         } catch {
-            print("Ошибка движка: \(error)")
+            print("Engine error: \(error)")
         }
     }
     
-    func calculateDecibels(from buffer: AVAudioPCMBuffer) -> Float {
+    private func calculateDecibels(from buffer: AVAudioPCMBuffer) -> Float {
         guard let samples = buffer.floatChannelData?[0] else {
             return -160
         }
@@ -74,15 +73,30 @@ class AudioMeter {
         
         do {
             try session.setActive(false)
-            print("Сессия остановлена")
         } catch {
-            print("Ошибка остановки сессии: \(error)")
+            print("Stop error: \(error)")
         }
     }
-        Task {                                                     // отдельная задача: ждёт всё время
-                named: AVAudioSession.interruptionNotification     // ждём только уведомления о прерываниях
-                    continue                                       // битое уведомление — ждём следующее
+    
+    func observeInterruptions() {
+        Task {
+            for await notification in NotificationCenter.default.notifications(
+                named: AVAudioSession.interruptionNotification
+            ) {
+                guard let value = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+                      let type = AVAudioSession.InterruptionType(rawValue: value) else {
+                    continue
                 }
-
-                switch type {                                      // системный enum
+                
+                switch type {
+                case .began:
+                    onInterruptionBegan?()
+                case .ended:
+                    onInterruptionEnded?()
+                @unknown default:
+                    break
+                }
+            }
+        }
+    }
 }

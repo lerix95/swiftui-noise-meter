@@ -25,7 +25,7 @@ struct PrimaryButtonView: View {
 }
 
 #Preview {
-    PrimaryButtonView(title: "Открыть Настройки", action: {})
+    PrimaryButtonView(title: "Open Settings", action: {})
         .padding(.horizontal, 38)
         .preferredColorScheme(.dark)
 }

@@ -20,7 +20,7 @@ enum MeterState {
         case .denied:
             ""
         case .listening:
-            "Слушаю..."
+            "Listening…"
         case .measuring(let decibels):
             "\(Int(decibels)) dB"
         }
@@ -31,9 +31,9 @@ enum MeterState {
         case .requesting:
             ""
         case .denied:
-            "Разрешите доступ к микрофону в Настройках."
+            "Allow microphone access in Settings."
         case .listening:
-            "Первый замер займёт пару секунд, подождите."
+            "The first measurement takes a couple of seconds."
         case .measuring(let decibels):
             NoiseLevel(decibels: decibels).description
         }

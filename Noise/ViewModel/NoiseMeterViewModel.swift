@@ -15,6 +15,19 @@ class NoiseMeterViewModel {
     private var smoothedDecibels: Double?
     private var isRunning = false
     
+    private let calibrationOffset = 105.0
+    private let smoothingFactor = 0.2
+    
+    init() {
+        audioMeter.onInterruptionBegan = { [weak self] in
+            self?.stopMeasuring()
+        }
+        audioMeter.onInterruptionEnded = { [weak self] in
+            Task { await self?.startMeasuring() }
+        }
+        audioMeter.observeInterruptions()
+    }
+    
     func startMeasuring() async {
         guard !isRunning else { return }
         isRunning = true
@@ -46,11 +59,11 @@ class NoiseMeterViewModel {
         smoothedDecibels = nil
     }
     
-    func updateLevel(_ decibels: Float) {
-        let calibrated = max(Double(decibels) + 105, 0)
+    private func updateLevel(_ decibels: Float) {
+        let calibrated = max(Double(decibels) + calibrationOffset, 0)
         
         if let previous = smoothedDecibels {
-            smoothedDecibels = previous + (calibrated - previous ) * 0.2
+            smoothedDecibels = previous + (calibrated - previous) * smoothingFactor
         } else {
             smoothedDecibels = calibrated
         }
